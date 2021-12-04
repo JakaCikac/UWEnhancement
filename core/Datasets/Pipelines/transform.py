@@ -15,6 +15,7 @@ class Resize(object):
                  ratio=0,
                  keep_ratio=True
                  ):
+        self.do_ratio = False
         if img_scale is None:
             self.img_scale = None
         else:
