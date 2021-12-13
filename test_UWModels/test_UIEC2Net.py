@@ -33,7 +33,7 @@ def get_host_info():
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
     parser.add_argument('--config',type=str,
-                        default='config/UIEC2Net.py',
+                        default='config/CoralUIEC2Net.py',
                         help='train config file path')
     parser.add_argument('--load_from',
                         default='checkpoints/UIEC2Net.pth',
@@ -100,8 +100,8 @@ if __name__ == '__main__':
         len(cfg.gpu_ids))
 
     save_cfg = False
-    for i in range(len(cfg.test_pipeling)):
-        if 'Normalize' == cfg.test_pipeling[i].type:
+    for i in range(len(cfg.test_pipeline)):
+        if 'Normalize' == cfg.test_pipeline[i].type:
             save_cfg = True
 
     save_path = osp.join(cfg.savepath, cfg.load_from.split('/')[-1].split('.')[0])

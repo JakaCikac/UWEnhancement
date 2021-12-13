@@ -139,8 +139,8 @@ if __name__ == '__main__':
     max_iters = cfg.total_epoch * len(data_loader)
 
     save_cfg = False
-    for i in range(len(cfg.test_pipeling)):
-        if 'Normalize' == cfg.test_pipeling[i].type:
+    for i in range(len(cfg.test_pipeline)):
+        if 'Normalize' == cfg.test_pipeline[i].type:
             save_cfg = True
 
     model.train()

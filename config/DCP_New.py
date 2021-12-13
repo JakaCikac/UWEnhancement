@@ -31,7 +31,7 @@ train_pipeline = [dict(type='LoadImageFromFile', gt_type='color', get_gt=True),
                   # dict(type='Pad', size_divisor=32, mode='resize'),
                   dict(type='ImageToTensor'),
                   dict(type='Normalize', **img_norm_cfg)]
-test_pipeling = [dict(type='LoadImageFromFile', gt_type='color', get_gt=False),
+test_pipeline = [dict(type='LoadImageFromFile', gt_type='color', get_gt=False),
                  # dict(type='Resize', img_scale=(256,256), keep_ratio=True),
                  # dict(type='Pad', size_divisor=32, mode='resize'),
                  dict(type='FlipEnsemble'),
@@ -58,13 +58,13 @@ data = dict(
         ann_file=data_root_test + val_ann_file_path,
         img_prefix=data_root_test + 'train/',
         gt_prefix=data_root_test + 'gt/',
-        pipeline=test_pipeling),
+        pipeline=test_pipeline),
     test=dict(                                          # load data in test process
         type=dataset_type,
         ann_file=data_root_test + val_ann_file_path,
         img_prefix=data_root_test + 'train/',
         gt_prefix=data_root_test + 'gt/',
-        pipeline=test_pipeling,
+        pipeline=test_pipeline,
         test_mode=True))
 
 train_cfg = dict(train_backbone=True)

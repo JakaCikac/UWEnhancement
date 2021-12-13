@@ -114,8 +114,8 @@ if __name__ == '__main__':
         len(cfg.gpu_ids))
 
     save_cfg = False
-    for i in range(len(cfg.test_pipeling)):
-        if 'Normalize' == cfg.test_pipeling[i].type:
+    for i in range(len(cfg.test_pipeline)):
+        if 'Normalize' == cfg.test_pipeline[i].type:
             save_cfg = True
 
     save_path = osp.join(cfg.savepath, cfg.load_from.split('/')[-1].split('.')[0])

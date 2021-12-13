@@ -6,7 +6,7 @@ model = dict(type='UWCNN',
              get_parameter=True)
 dataset_type = 'AlignedDataset'
 data_root_train = '/home/PJLAB/wangyudong/code/wyd/UW/DATA/Train/'                  # data root, default = DATA
-data_root_test = '/home/PJLAB/wangyudong/code/wyd/UW/DATA/Test/'
+data_root_test = '/home/user/projects/ai4c/UW/DATA/Test/'
 train_ann_file_path = 'train.txt'        # txt file for loading images, default = train.txt
 val_ann_file_path = 'EUVP.txt'          # txt file for loading images (validate during training process), default = test.txt
 test_ann_file_path = 'EUVP.txt'         # txt file for loading images, default = test.txt
@@ -20,7 +20,7 @@ train_pipeline = [dict(type='LoadImageFromFile', gt_type='color', get_gt=True),
                   # dict(type='Pad', size_divisor=32, mode='resize'),
                   dict(type='ImageToTensor'),
                   dict(type='Normalize', **img_norm_cfg)]
-test_pipeling = [dict(type='LoadImageFromFile', gt_type='color', get_gt=False),
+test_pipeline = [dict(type='LoadImageFromFile', gt_type='color', get_gt=False),
                  # dict(type='Resize', img_scale=(256,256), keep_ratio=True),
                  # dict(type='Pad', size_divisor=32, mode='resize'),
                  dict(type='ImageToTensor'),
@@ -44,13 +44,13 @@ data = dict(
         ann_file=data_root_test + test_ann_file_path,
         img_prefix=data_root_test + 'EUVP/',
         gt_prefix=data_root_test + 'gt/',
-        pipeline=test_pipeling),
+        pipeline=test_pipeline),
     test=dict(                                          # load data in test process
         type=dataset_type,
         ann_file=data_root_test + test_ann_file_path,
         img_prefix=data_root_test + 'EUVP/',
         gt_prefix=data_root_test + 'gt/',
-        pipeline=test_pipeling,
+        pipeline=test_pipeline,
         test_mode=True))
 
 train_cfg = dict(train_backbone=True)
