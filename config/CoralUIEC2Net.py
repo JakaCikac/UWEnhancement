@@ -1,52 +1,30 @@
-train_name = 'Train'
-val_name = 'Val'
 test_name = 'Test'
-# backbone 和 init_type 需要写
 model = dict(type='UIEC2Net',
              get_parameter=True)
-dataset_type = 'AlignedDataset'
+dataset_type = 'CoralDataset'
 
-data_root_train = '/home/PJLAB/wangyudong/code/wyd/UW/DATA/Train/'                  # data root, default = DATA
-data_root_test = '/home/natrixanorax/projects/ai4c/UW/DATA/test_set/'
-train_ann_file_path = 'train.txt'        # txt file for loading images, default = train.txt
-val_ann_file_path = 'test_time.txt'          # txt file for loading images (validate during training process), default = test.txt
-test_ann_file_path = 'test.txt'         # txt file for loading images, default = test.txt
+data_root_test = '/home/user/projects/ai4c/UW/DATA/test_set/'
+test_ann_file_path = 'annotations_ATL_CE.csv'
+images = 'images_ATL/'
 
 
 img_norm_cfg = dict(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
-train_pipeline = [dict(type='LoadImageFromFile', gt_type='color', get_gt=True),
-                  dict(type='RandomFlip', flip_ratio=0.5),
-                  # dict(type='Pad', size_divisor=32, mode='resize'),
-                  dict(type='ImageToTensor')]
 test_pipeline = [dict(type='LoadImageFromFile', gt_type='color', get_gt=False),
-                 # dict(type='Resize', img_scale=(256,256), keep_ratio=True),
+                 #dict(type='Resize', img_scale=(1024,1024), keep_ratio=True),
                  # dict(type='Pad', size_divisor=32, mode='resize'),
                  dict(type='ImageToTensor')]
 
 usebytescale = False                                    # if use output min->0, max->255, default is False (copy from scipy=1.1.0)
 
 data = dict(
-    samples_per_gpu=1,                                  # batch size, default = 4
+    samples_per_gpu=4,                                  # batch size, default = 4
     workers_per_gpu=0,                                  # multi process, default = 4, debug uses 0
     val_samples_per_gpu=1,                              # validate batch size, default = 1
     val_workers_per_gpu=0,                              # validate multi process, default = 4
-    train=dict(                                         # load data in training process, debug uses 0
-        type=dataset_type,
-        ann_file=data_root_train + train_ann_file_path,
-        img_prefix=data_root_train + 'train/',
-        gt_prefix=data_root_train + 'gt/',
-        pipeline=train_pipeline),
-    val=dict(                                           # load data in validate process
-        type=dataset_type,
-        ann_file=data_root_test + test_ann_file_path,
-        img_prefix=data_root_test + 'test_time/',
-        gt_prefix=data_root_test + 'gt/',
-        pipeline=test_pipeline),
     test=dict(                                          # load data in test process
         type=dataset_type,
         ann_file=data_root_test + test_ann_file_path,
-        img_prefix=data_root_test + 'test/',
-        gt_prefix=data_root_test + 'test/',
+        img_prefix=data_root_test + images,
         pipeline=test_pipeline,
         test_mode=True))
 
@@ -88,4 +66,4 @@ save_freq_iters = 500                   # saving frequent (saving every XX iters
 save_freq_epoch = 1                     # saving frequent (saving every XX epoch(s))
 log_level = 'INFO'                      # The level of logging.
 
-savepath = 'results/UIEC2NetDefault'
+savepath = 'results/UIEC2Net'
