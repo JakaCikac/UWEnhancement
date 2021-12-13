@@ -1,4 +1,4 @@
-from UW.core.Registry import Registry, build_from_cfg
+from ..Registry import Registry, build_from_cfg
 
 
 LOSSES = Registry('losses')

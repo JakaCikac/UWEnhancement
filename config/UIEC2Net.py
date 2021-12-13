@@ -6,8 +6,8 @@ model = dict(type='UIEC2Net',
              get_parameter=True)
 dataset_type = 'AlignedDataset'
 
-data_root_train = '/home/PJLAB/wangyudong/code/wyd/UW/DATA/Train/'                  # data root, default = DATA
-data_root_test = '/home/PJLAB/wangyudong/code/wyd/UW/DATA/Test/'
+data_root_train = 'data/EUVP/underwater_imagenet/'                  # data root, default = DATA
+data_root_test = 'data/EUVP/test_samples/'
 train_ann_file_path = 'train.txt'        # txt file for loading images, default = train.txt
 val_ann_file_path = 'test_time.txt'          # txt file for loading images (validate during training process), default = test.txt
 test_ann_file_path = 'test_time.txt'         # txt file for loading images, default = test.txt
@@ -33,20 +33,20 @@ data = dict(
     train=dict(                                         # load data in training process, debug uses 0
         type=dataset_type,
         ann_file=data_root_train + train_ann_file_path,
-        img_prefix=data_root_train + 'train/',
-        gt_prefix=data_root_train + 'gt/',
+        img_prefix=data_root_train + 'trainA/',
+        gt_prefix=data_root_train + 'trainB/',
         pipeline=train_pipeline),
     val=dict(                                           # load data in validate process
         type=dataset_type,
         ann_file=data_root_test + test_ann_file_path,
-        img_prefix=data_root_test + 'test_time/',
-        gt_prefix=data_root_test + 'gt/',
+        img_prefix=data_root_test + 'Inp/',
+        gt_prefix=data_root_test + 'GTr/',
         pipeline=test_pipeling),
     test=dict(                                          # load data in test process
         type=dataset_type,
         ann_file=data_root_test + test_ann_file_path,
-        img_prefix=data_root_test + 'test_time/',
-        gt_prefix=data_root_test + 'gt/',
+        img_prefix=data_root_test + 'Inp/',
+        gt_prefix=data_root_test + 'GTr/',
         pipeline=test_pipeling,
         test_mode=True))
 
@@ -81,9 +81,9 @@ log_config = dict(
 
 total_epoch = 1000
 total_iters = None                      # epoch before iters,
-work_dir = './checkpoints/UIEC2Net/1'      #
+work_dir = 'checkpoints/UIEC2Net/1'      #
 load_from = None                        # only load network parameters
-resume_from = None                      # resume training
+resume_from = 'checkpoints/UIEC2Net/1/latest.pth'                      # resume training
 save_freq_iters = 500                   # saving frequent (saving every XX iters)
 save_freq_epoch = 1                     # saving frequent (saving every XX epoch(s))
 log_level = 'INFO'                      # The level of logging.

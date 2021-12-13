@@ -11,16 +11,18 @@ import os.path as osp
 from torch.nn.parallel import DataParallel
 import collections
 import visdom
-from UW.utils.read_file import Config
-from UW.core.Models import build_network
-from UW.core.Datasets import build_dataset, build_dataloader
-from UW.core.Optimizer import build_optimizer, build_scheduler
-from UW.utils import (mkdir_or_exist, get_root_logger,
+from utils.read_file import Config
+from core.Models import build_network
+from core.Datasets import build_dataset, build_dataloader
+from core.Optimizer import build_optimizer, build_scheduler
+from utils import (mkdir_or_exist, get_root_logger,
                       save_epoch, save_latest, save_item,
                       resume, load)
-from UW.core.Losses import build_loss
-from UW.utils.Visualizer import Visualizer
-from UW.utils.save_image import normimage, normPRED
+from core.Losses import build_loss
+from utils.Visualizer import Visualizer
+from utils.save_image import normimage, normPRED
+import wandb
+
 
 from tensorboardX import SummaryWriter
 TORCH_VERSION = torch.__version__
@@ -30,10 +32,14 @@ from socket import gethostname
 def get_host_info():
     return f'{getuser()}@{gethostname()}'
 
+os.environ["WANDB_RESUME"] = "allow"
+# os.environ["WANDB_RUN_ID"] = wandb.util.generate_id()
+idd = wandb.util.generate_id()
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--config',type=str, default='/home/dong/GitHub_Frame/UW/config/UWCNN.py',
+    parser.add_argument('--config',type=str, default='config/UIEC2Net.py',
                         help='train config file path')
     parser.add_argument('--work_dir', help='the dir to save logs and models,')
     group_gpus = parser.add_mutually_exclusive_group()
@@ -56,6 +62,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
     cfg = Config.fromfile(args.config)
+    wandb.init(project="Underwater Image Color Enhancement", config=cfg, name='UIEC2Net', resume=True)
     if args.work_dir is not None:
         # update configs according to CLI args if args.work_dir is not None
         cfg.work_dir = args.work_dir
@@ -87,6 +94,11 @@ if __name__ == '__main__':
     optimizer = build_optimizer(model, cfg.optimizer)
     Scheduler = build_scheduler(cfg.lr_config)
     logger.info('-' * 20 + 'finish build optimizer' + '-' * 20)
+    ite_num = 0
+    start_epoch = 1     # start range at 1-1 = 0
+    running_loss = 0.0
+    running_tar_loss = 0.0
+    ite_num4val = 0
 
     if cfg.resume_from:
         start_epoch, ite_num = resume(cfg.resume_from, model, optimizer, logger, )
@@ -122,12 +134,8 @@ if __name__ == '__main__':
     # criterion_l1_loss = build_loss(cfg.loss_l1)
     # criterion_perc_loss = build_loss(cfg.loss_perc)
     # criterion_tv_loss = build_loss(cfg.loss_tv)
+    
 
-    ite_num = 0
-    start_epoch = 1     # start range at 1-1 = 0
-    running_loss = 0.0
-    running_tar_loss = 0.0
-    ite_num4val = 0
     max_iters = cfg.total_epoch * len(data_loader)
 
     save_cfg = False
@@ -176,6 +184,13 @@ if __name__ == '__main__':
             write.add_scalar('loss_ssim', loss_ssim, ite_num)
             write.add_scalar('loss_perc', loss_perc, ite_num)
             write.add_scalar('loss_tv', loss_tv, ite_num)
+            metrics = {
+                'loss_l1':{'training': loss_l1 },
+                'loss_ssim':{'training': loss_ssim },
+                'loss_perc':{'training': loss_perc },
+                'loss_tv':{'training': loss_tv },
+                   }
+            wandb.log(metrics)
 
             logger.info('Epoch: [%d][%d/%d]  lr: %f  time: %.3f loss_l1: %f  loss_ssim: %f  loss_perc: %f   loss_tv: %f   loss: %f',
                         epoch+1, ite_num, max_iters, optimizer.param_groups[0]['lr'],
@@ -215,6 +230,7 @@ if __name__ == '__main__':
             # print('-'*30, 'saving model')
             save_epoch(model, optimizer, cfg.work_dir, epoch, ite_num)
             model.train()
+            torch.cuda.empty_cache()
         # after eppoch
         # update learning rate
         # print(optimizer.param_groups[0]['lr'])

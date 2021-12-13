@@ -15,3 +15,7 @@ test_UWModels/results/*
 tools/runs/*
 
 docs/_build/
+data/*
+*.zip
+*.log
+wandb/*

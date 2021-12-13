@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from UW.core.Losses.builder import LOSSES
+from .builder import LOSSES
 
 
 @LOSSES.register_module()

@@ -2,7 +2,7 @@ import os
 
 
 def getfiles():
-    filenames=os.listdir('../DATA/EUVP')
+    filenames=os.listdir('../data/EUVP/test_samples/Inp')
     print(filenames)
     return filenames
 

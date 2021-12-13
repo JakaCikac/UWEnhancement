@@ -31,18 +31,17 @@ def resume(filename,
     assert os.path.exists(filename)
     if torch.cuda.is_available():
         device_id = torch.cuda.current_device()
-        checkpoint = torch.load(filename,
-                                map_location=lambda storage, loc: storage.cuda(device_id))
+        checkpoint = torch.load(filename,map_location=lambda storage, loc: storage.cuda(device_id))
     else:
         checkpoint = torch.load(filename)
+    epoch = checkpoint['meta']['epoch']
+    iter = checkpoint['meta']['iter']
     if "state_dict" in checkpoint.keys():
         checkpoint = remove_prefix(checkpoint['state_dict'], 'module.')
     else:
         checkpoint = remove_prefix(checkpoint, 'module.')
     model.load_state_dict(checkpoint)
     logger.info('load checkpoint from %s', filename)
-    epoch = checkpoint['meta']['epoch']
-    iter = checkpoint['meta']['iter']
     if 'optimizer' in checkpoint and resume_optimizer:
         optimizer.load_state_dict(checkpoint['optimizer'])
     logger.info('resumed epoch %d, iter %d', epoch, iter)
