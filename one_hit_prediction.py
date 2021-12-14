@@ -24,10 +24,10 @@ from utils.save_image import (save_image, normimage,
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
     parser.add_argument('--config',type=str,
-                        default='config/CoralUIEC2Net.py',
+                        default='config/UIEC2Net.py',
                         help='train config file path')
     parser.add_argument('--load_from',
-                        default='checkpoints/latest.pth',
+                        default='checkpoints/UIEC2Net/1/latest.pth',
                         help='the dir to save logs and models,')
     parser.add_argument('--savepath', help='the dir to save logs and models,')
     group_gpus = parser.add_mutually_exclusive_group()
@@ -50,8 +50,22 @@ class ModelLoader:
     def __init__(self) -> None:
         args = parse_args()
         self.cfg = Config.fromfile(args.config)
+        if args.load_from is not None:
+            # update configs according to CLI args if args.work_dir is not None
+            self.cfg.load_from = args.load_from
+        if args.savepath is not None:
+            # update configs according to CLI args if args.work_dir is not None
+            self.cfg.savepath = args.savepath
+        elif self.cfg.get('work_dir', None) is None:
+            # use config filename as default work_dir if cfg.work_dir is None
+            self.cfg.savepath = osp.join('./results',
+                                    osp.splitext(osp.basename(args.config))[0])
+        if args.gpu_ids is not None:
+            self.cfg.gpu_ids = args.gpu_ids
+        else:
+            self.cfg.gpu_ids = range(1) if args.gpus is None else range(args.gpus)
         self.model = build_network(self.cfg .model, train_cfg=self.cfg .train_cfg, test_cfg=self.cfg .test_cfg)
-        load(self.cfg .load_from, self.model, None)
+        load(self.cfg.load_from, self.model, None)
         if torch.cuda.is_available():
             # model = DataParallel(model.cuda(), device_ids=cfg.gpu_ids)
             self.model = self.model.cuda()
@@ -69,7 +83,6 @@ class ModelLoader:
         rgb_numpy = normimage_test(out_rgb, save_cfg=save_cfg, usebytescale=self.cfg .usebytescale)
         outsavepath = osp.join(save_path,  'result.png')
         # inputsavepath = osp.join(save_path, 'result_input.png')
-
         # save_image(input_numpy, inputsavepath)
         save_image(rgb_numpy, outsavepath, usebytescale=self.cfg.usebytescale)
         return rgb_numpy

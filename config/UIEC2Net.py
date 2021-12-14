@@ -6,8 +6,8 @@ model = dict(type='UIEC2Net',
              get_parameter=True)
 dataset_type = 'AlignedDataset'
 
-data_root_train = '/home/PJLAB/wangyudong/code/wyd/UW/DATA/Train/'                  # data root, default = DATA
-data_root_test = '/home/natrixanorax/projects/ai4c/UW/DATA/test_set/'
+data_root_train = 'data/EUVP/underwater_imagenet/'                  # data root, default = DATA
+data_root_test = 'data/EUVP/test_samples/'
 train_ann_file_path = 'train.txt'        # txt file for loading images, default = train.txt
 val_ann_file_path = 'test_time.txt'          # txt file for loading images (validate during training process), default = test.txt
 test_ann_file_path = 'test.txt'         # txt file for loading images, default = test.txt
@@ -41,13 +41,13 @@ data = dict(
         ann_file=data_root_test + test_ann_file_path,
         img_prefix=data_root_test + 'Inp/',
         gt_prefix=data_root_test + 'GTr/',
-        pipeline=test_pipeling),
+        pipeline=test_pipeline),
     test=dict(                                          # load data in test process
         type=dataset_type,
         ann_file=data_root_test + test_ann_file_path,
         img_prefix=data_root_test + 'Inp/',
         gt_prefix=data_root_test + 'GTr/',
-        pipeline=test_pipeling,
+        pipeline=test_pipeline,
         test_mode=True))
 
 train_cfg = dict(train_backbone=True)

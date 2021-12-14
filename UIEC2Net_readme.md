@@ -3,11 +3,13 @@
 - Jaka Cikač  
 - Harits Abdurrohman
 
+
 ## Intro
 
 Underwater image enhancement has attracted much attention due to the rise of marine resource development in recent years. Fruitpunch held Coral Reef Challenge to help marine research with AI as a tool. Composed by three separate task, this group focused on colour enhancement.
 
-Previously we ..
+Previously we did colour enchancement with ..
+
 
 - histogram equalizer
 - CLAHE
@@ -15,14 +17,17 @@ Previously we ..
 - proposed some idea like using GAN or NeRF
 
 
-... And after several experiment, we got the best approach for this task: Underwater Image Enhancement Convolution Neural Network using 2 Color Space (UIEC<sup>2</sup>Net).
+... And after several experiments, we got the best approach for this task: Underwater Image Enhancement Convolution Neural Network using 2 Color Space (UIEC^2Net).
 
 ![image](img/fig1.png)
 
-UIEC<sup>2</sup>Net is an end-to-end model that using RGB and HSV color space to enhance underwater image. It has three main blocks:
+UIEC^2Net is an end-to-end model that using RGB and HSV color space to enhance underwater image. It has three main blocks:
+
+
 1. RGB pixel-level block to denoising and removing color cast
 2. HSV global adjust block to adjust underwater image lighting (including color and saturation) globally
 3. Attention block for combining these two blocks output images
+
 
 ```bibtex
 @article{DBLP:journals/corr/abs-2103-07138,
@@ -55,12 +60,12 @@ _(Left to Right: Input image, Ground Truth, Output image)_
 ![image](img/image.png)
 ![image](img/Screenshot2021-12-13at10.44.46.png)
 
-Result using coral images:
+Result from coral images:
 ![image](img/22005133002_10708_68975_Sand.png)
 ![image](img/22005133302_7173_47655_Macroalgae1.png)
 ![image](img/22005134002_11809_75305_Siderastrea_siderea.png)
 
 
-## Try yourself
+## Try it yourself
 
-We store the model on a container (_don't worry, I got this for free from my campus - Harits_) so you can try yourself.
+We store the model on a container so you can try it yourself. Pick an underwater image and upload it
