@@ -20,3 +20,4 @@ data/*
 *.log
 wandb/*
 config/UIEC2Net.py
+temp/*
